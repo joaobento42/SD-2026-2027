@@ -96,7 +96,6 @@ public class UDPServer2 {
         if (nCurrentMessage < 1) {
             System.out.println("Mensagem " + nCurrentMessage + " descartada: número de sequência inválido.");
         } else if (nCurrentMessage <= nLastMessageInOrder) {
-            // Já foi entregue: se fosse guardada, ficaria para sempre na estrutura temporária.
             System.out.println("Mensagem " + nCurrentMessage + " repetida (já entregue): descartada.");
         } else if (temporaryMessages.containsKey(nCurrentMessage)) {
             System.out.println("Mensagem " + nCurrentMessage + " repetida (já está na estrutura temporária): ignorada.");
