@@ -1,1 +1,6 @@
 .clawdea/REPO_STATE.md
+
+# Java build output
+rep01-lider/out/
+rep01-replica/out/
+**/*.class
