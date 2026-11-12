@@ -11,7 +11,10 @@
       <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR02" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR03" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR04" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR05" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR05/raft04-no/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR05/raft04-no/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR05/raft04-produtor/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Sprints/E1-COMINDIR05/raft04-processador/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
