@@ -4,3 +4,7 @@
 rep01-lider/out/
 rep01-replica/out/
 **/*.class
+target/
+.idea/
+*.iml
+.env
