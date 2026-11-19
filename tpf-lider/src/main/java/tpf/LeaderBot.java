@@ -3,7 +3,9 @@ package tpf;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -13,7 +15,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 public class LeaderBot extends ListenerAdapter {
 
     public static void main(String[] args) throws InterruptedException {
-        // Lê o token e o ID do servidor a partir das variáveis de ambiente
         String token = System.getenv("DISCORD_TOKEN");
         String guildId = System.getenv("GUILD_ID");
 
@@ -22,16 +23,13 @@ public class LeaderBot extends ListenerAdapter {
             System.exit(1);
         }
 
-        // Inicializa o JDA com o intent Message Content ativado
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new LeaderBot())
                 .build();
 
-        // Aguarda que o bot fique totalmente ligado
         jda.awaitReady();
 
-        // Obtém o servidor de teste e regista os Guild Commands (atualização imediata)
         Guild guild = jda.getGuildById(guildId);
         if (guild != null) {
             guild.updateCommands().addCommands(
@@ -48,12 +46,28 @@ public class LeaderBot extends ListenerAdapter {
 
                     Commands.slash("recuperar", "Recupera registos num intervalo")
                             .addOption(OptionType.INTEGER, "de", "Índice inicial", true)
-                            .addOption(OptionType.INTEGER, "ate", "Índice final", true)
+                            .addOption(OptionType.INTEGER, "ate", "Índice final", true),
+
+                    Commands.slash("replica-token", "Gera um token para uma nova réplica"),
+
+                    Commands.slash("replica-remover", "Remove uma réplica do sistema")
+                            .addOption(OptionType.STRING, "id", "Identificador da réplica", true),
+
+                    Commands.slash("rajada", "Envia uma rajada de mensagens de teste")
+                            .addOption(OptionType.INTEGER, "n", "Número de mensagens", true)
+                            .addOption(OptionType.INTEGER, "intervaloms", "Intervalo entre mensagens em milissegundos", true)
             ).queue();
             System.out.println("Comandos registados com sucesso no servidor: " + guild.getName());
         } else {
             System.err.println("ERRO: Servidor com ID " + guildId + " não encontrado.");
         }
+    }
+
+    // Verifica se o membro possui o papel "admin-arquivo"
+    private boolean temPermissaoAdmin(Member member) {
+        if (member == null) return false;
+        return member.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("admin-arquivo"));
     }
 
     @Override
@@ -62,24 +76,100 @@ public class LeaderBot extends ListenerAdapter {
 
         switch (comando) {
             case "registar" -> {
-                String texto = event.getOption("texto").getAsString();
-                event.reply("[Provisório] Comando `/registar` recebido com texto: `" + texto + "`").queue();
+                String texto = event.getOption("texto").getAsString().trim();
+                if (texto.isEmpty()) {
+                    event.reply("Erro: O texto a registar não pode estar vazio.").setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("/registar recebido: texto=\"" + texto + "\" — ainda não implementado").queue();
             }
+
             case "estado" -> {
-                event.reply("[Provisório] Comando `/estado` recebido. Sistema operacional.").queue();
+                event.reply("/estado recebido — ainda não implementado").queue();
             }
+
             case "config" -> {
+                if (!temPermissaoAdmin(event.getMember())) {
+                    event.reply("Acesso negado: Apenas membros com o papel `admin-arquivo` podem usar `/config`.")
+                            .setEphemeral(true).queue();
+                    return;
+                }
                 if ("r".equals(event.getSubcommandName())) {
                     int n = event.getOption("n").getAsInt();
-                    event.reply("[Provisório] Comando `/config r` recebido com n = `" + n + "`").queue();
+                    if (n < 1) {
+                        event.reply("Erro: O fator de replicação `n` deve ser maior ou igual a 1.").setEphemeral(true).queue();
+                        return;
+                    }
+                    event.reply("/config r recebido: n=" + n + " — ainda não implementado").queue();
                 }
             }
+
             case "recuperar" -> {
                 int de = event.getOption("de").getAsInt();
                 int ate = event.getOption("ate").getAsInt();
-                event.reply("[Provisório] Comando `/recuperar` recebido de `" + de + "` até `" + ate + "`").queue();
+                if (de < 1 || ate < de) {
+                    event.reply("Erro: Intervalo inválido (`de` deve ser >= 1 e `ate` >= `de`).").setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("/recuperar recebido: de=" + de + ", ate=" + ate + " — ainda não implementado").queue();
             }
+
+            case "replica-token" -> {
+                if (!temPermissaoAdmin(event.getMember())) {
+                    event.reply("Acesso negado: Apenas membros com o papel `admin-arquivo` podem usar `/replica-token`.")
+                            .setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("/replica-token recebido — ainda não implementado").setEphemeral(true).queue();
+            }
+
+            case "replica-remover" -> {
+                if (!temPermissaoAdmin(event.getMember())) {
+                    event.reply("Acesso negado: Apenas membros com o papel `admin-arquivo` podem usar `/replica-remover`.")
+                            .setEphemeral(true).queue();
+                    return;
+                }
+                String id = event.getOption("id").getAsString().trim();
+                if (id.isEmpty()) {
+                    event.reply("Erro: O `id` da réplica não pode estar vazio.").setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("/replica-remover recebido: id=" + id + " — ainda não implementado").queue();
+            }
+
+            case "rajada" -> {
+                if (!temPermissaoAdmin(event.getMember())) {
+                    event.reply("Acesso negado: Apenas membros com o papel `admin-arquivo` podem usar `/rajada`.")
+                            .setEphemeral(true).queue();
+                    return;
+                }
+                int n = event.getOption("n").getAsInt();
+                int intervaloMs = event.getOption("intervaloms").getAsInt();
+                if (n < 1 || intervaloMs < 0) {
+                    event.reply("Erro: `n` deve ser >= 1 e `intervaloMs` >= 0.").setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("/rajada recebido: n=" + n + ", intervaloMs=" + intervaloMs + " — ainda não implementado").queue();
+            }
+
             default -> event.reply("Comando desconhecido.").setEphemeral(true).queue();
+        }
+    }
+
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+        // Ignora mensagens enviadas por bots (incluindo o próprio LeaderBot)
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        // Verifica se a mensagem foi enviada no canal #arquivo
+        if (event.getChannel().getName().equals("arquivo")) {
+            String autor = event.getAuthor().getName();
+            String conteudo = event.getMessage().getContentDisplay();
+
+            System.out.println("[#arquivo] Mensagem detetada de " + autor + ": " + conteudo);
+            event.getChannel().sendMessage("[Provisório] Mensagem detetada em `#arquivo` de **" + autor + "**: `" + conteudo + "` — ainda não implementado").queue();
         }
     }
 }

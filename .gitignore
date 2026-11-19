@@ -8,3 +8,5 @@ target/
 .idea/
 *.iml
 .env
+*.key
+master.key
